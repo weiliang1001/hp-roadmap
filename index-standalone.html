@@ -4863,12 +4863,13 @@ const filterState = {
 // Init
 // ============================================================
 function init() {
-  buildSegmentTabs();
-  buildLegend();
-  buildSidebarFilters();
-  renderRoadmap();
-  renderScatterChart();
-  renderBarChart();
+  console.log("[DEBUG] init() started. hpProducts=" + hpProducts.length);
+  try { buildSegmentTabs(); console.log("[DEBUG] buildSegmentTabs done"); } catch(e) { console.error("buildSegmentTabs error:", e); }
+  try { buildLegend(); console.log("[DEBUG] buildLegend done"); } catch(e) { console.error("buildLegend error:", e); }
+  try { buildSidebarFilters(); console.log("[DEBUG] buildSidebarFilters done"); } catch(e) { console.error("buildSidebarFilters error:", e); }
+  try { renderRoadmap(); console.log("[DEBUG] renderRoadmap done"); } catch(e) { console.error("renderRoadmap error:", e); }
+  try { renderScatterChart(); console.log("[DEBUG] renderScatterChart done"); } catch(e) { console.error("renderScatterChart error:", e); }
+  try { renderBarChart(); console.log("[DEBUG] renderBarChart done"); } catch(e) { console.error("renderBarChart error:", e); }
 }
 
 function buildSegmentTabs() {
@@ -5128,8 +5129,11 @@ let tooltipEl = null;
 function renderScatterChart() {
   const canvas = document.getElementById("bubbleChart");
   const ctx = canvas.getContext("2d");
-  const W = canvas.width = canvas.offsetWidth * 2;
+  const rawW = canvas.offsetWidth;
+  console.log("[DEBUG] renderScatterChart called. canvas.offsetWidth=" + rawW + ", hpProducts.length=" + hpProducts.length);
+  const W = canvas.width = rawW * 2;
   const H = canvas.height = 320 * 2;
+  if (rawW === 0) { console.warn("[DEBUG] Canvas has 0 width! Check CSS layout."); }
   ctx.scale(2, 2);
   const w = canvas.offsetWidth;
   const h = 320;
@@ -5438,6 +5442,12 @@ window.addEventListener("resize", () => {
 });
 
 init();
+// Fallback: re-render charts after a short delay (in case layout wasn't ready)
+setTimeout(() => {
+  console.log("[DEBUG] Fallback chart re-render...");
+  try { renderScatterChart(); } catch(e) { console.error("Fallback renderScatterChart error:", e); }
+  try { renderBarChart(); } catch(e) { console.error("Fallback renderBarChart error:", e); }
+}, 500);
 </script>
 </body>
 </html>
