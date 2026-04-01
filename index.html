@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP 产品线 Roadmap 2026</title>
+<script src="products_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --hp-blue: #0096D6;
+    --hp-dark: #1a1a2e;
+    --hp-green: #00A78A;
+    --series-victus: #E85D04;
+    --series-pavilion: #00A78A;
+    --series-starbook: #0096D6;
+    --series-starbookx: #0077b0;
+    --series-pro: #7B3F9A;
+    --series-victus16: #CC4400;
+    --bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #666;
+    --border: #e0e0e0;
+    --sidebar-w: 240px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ===== Header ===== */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0096D6 100%);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+  .header p { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ===== Buttons ===== */
+  .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-primary { background: white; color: var(--hp-blue); }
+  .btn-primary:hover { background: #f0f0f0; transform: translateY(-1px); }
+  .btn-outline { background: rgba(255,255,255,0.15); color: white; border: 1.5px solid rgba(255,255,255,0.4); }
+  .btn-outline:hover { background: rgba(255,255,255,0.25); }
+
+  /* ===== Stats Bar ===== */
+  .stats-bar {
+    display: flex;
+    gap: 28px;
+    padding: 16px 32px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; min-width: 80px; }
+  .stat-number { font-size: 26px; font-weight: 800; color: var(--hp-blue); }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ===== Segment Tabs ===== */
+  .segment-tabs {
+    background: white;
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .seg-tab {
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .seg-tab:hover { color: var(--hp-blue); }
+  .seg-tab.active { color: var(--hp-blue); border-bottom-color: var(--hp-blue); }
+  .seg-tab .seg-count {
+    background: #f0f0f0;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    color: var(--text-muted);
+  }
+  .seg-tab.active .seg-count { background: #dbeafe; color: var(--hp-blue); }
+
+  /* ===== Main Layout ===== */
+  .main-layout {
+    display: flex;
+    min-height: calc(100vh - 200px);
+    align-items: flex-start;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 20px 16px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+  .sidebar-title:first-child { margin-top: 0; }
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1.5px solid var(--border);
+    background: #f8f8f8;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--hp-blue); color: var(--hp-blue); }
+  .chip.active { background: var(--hp-blue); color: white; border-color: var(--hp-blue); }
+  .chip.amd.active { background: #00A78A; border-color: #00A78A; }
+  .chip.intel.active { background: #0096D6; border-color: #0096D6; }
+  .chip.nvidia.active { background: #E85D04; border-color: #E85D04; }
+  .chip.uma.active { background: #888; border-color: #888; }
+  .chip.gaming.active { background: #E85D04; border-color: #E85D04; }
+  .chip.slim.active { background: #0096D6; border-color: #0096D6; }
+  .chip.premium.active { background: #7B3F9A; border-color: #7B3F9A; }
+  .chip.business.active { background: #00A78A; border-color: #00A78A; }
+
+  /* ===== Content Area ===== */
+  .content-area {
+    flex: 1;
+    padding: 24px;
+    overflow-x: auto;
+    min-width: 0;
+  }
+
+  /* ===== Bubble Chart Section ===== */
+  .chart-section {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+  .chart-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #bubbleChart { display: block; width: 100%; }
+
+  /* ===== Bar Chart Section ===== */
+  .bar-section {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+  .bar-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #barChart { display: block; width: 100%; }
+
+  /* ===== Roadmap Grid ===== */
+  #roadmap {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  /* ===== Series Section ===== */
+  .series-section { margin-bottom: 32px; }
+  .series-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .series-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+  }
+  .series-title { font-size: 15px; font-weight: 700; }
+  .series-count { font-size: 11px; color: var(--text-muted); background: #f0f0f0; padding: 2px 8px; border-radius: 10px; }
+  .series-models {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  /* ===== Product Card ===== */
+  .product-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    overflow: hidden;
+    position: relative;
+  }
+  .product-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+  }
+  .product-card.victus::before { background: var(--series-victus); }
+  .product-card.victus16::before { background: var(--series-victus16); }
+  .product-card.pavilion::before { background: var(--series-pavilion); }
+  .product-card.starbook::before { background: var(--series-starbook); }
+  .product-card.starbookx::before { background: var(--series-starbookx); }
+  .product-card.starbookx360::before { background: #5b5bda; }
+  .product-card.propro::before { background: var(--series-pro); }
+
+  .product-card:hover {
+    border-color: #b0b0b0;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  .product-card.hidden { display: none; }
+
+  .seg-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .seg-badge.gaming { background: #fff0e0; color: #E85D04; }
+  .seg-badge.slim { background: #dbeafe; color: #0096D6; }
+  .seg-badge.premium { background: #ede9fe; color: #7B3F9A; }
+  .seg-badge.business { background: #d1fae5; color: #00A78A; }
+
+  .product-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .product-name { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .product-pn { font-size: 10px; color: var(--text-muted); font-family: 'Consolas', monospace; margin-top: 2px; }
+  .product-price-block { text-align: right; flex-shrink: 0; }
+  .product-price-srp { font-size: 15px; font-weight: 800; color: var(--text); }
+  .product-price-real { font-size: 11px; color: var(--hp-green); font-weight: 600; }
+  .product-price-real.highlight-price { color: #E85D04; }
+
+  .product-specs { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .spec-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .spec-tag.cpu-amd { background: #d1fae5; color: #065f46; }
+  .spec-tag.cpu-intel { background: #dbeafe; color: #1e40af; }
+  .spec-tag.gpu-nvidia { background: #fff0e0; color: #92400e; }
+  .spec-tag.gpu-uma { background: #f3f4f6; color: #6b7280; }
+  .spec-tag.ram { background: #fef3c7; color: #92400e; }
+  .spec-tag.storage { background: #ede9fe; color: #5b21b6; }
+  .spec-tag.screen { background: #fce7f3; color: #9d174d; }
+  .spec-tag.color { background: #f0f9ff; color: #0369a1; }
+
+  .product-detail {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ddd;
+    font-size: 11px;
+    color: #555;
+    line-height: 1.8;
+  }
+  .product-card.expanded .product-detail { display: block; }
+  .product-card.expanded { border-color: var(--hp-blue); }
+  .detail-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .detail-item { min-width: 100px; }
+  .detail-label { color: var(--text-muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .detail-value { font-weight: 600; color: var(--text); margin-top: 1px; }
+
+  /* ===== Legend ===== */
+  .legend {
+    background: white;
+    padding: 10px 24px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 12px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== Search ===== */
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f0f0;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 12px;
+    width: 160px;
+    color: var(--text);
+  }
+
+  /* ===== Export overlay ===== */
+  #loading-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .spinner {
+    width: 38px; height: 38px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .header { padding: 16px 20px; }
+    .stats-bar { padding: 12px 20px; }
+    .segment-tabs { padding: 0 20px; }
+    .content-area { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <span id="loading-msg">正在生成图片...</span>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>🖥️ HP 产品线 Roadmap 2026</h1>
+    <p>Victus · Pavilion · 星Book · ProBook 全系列 · 实时产品配置速查</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="exportPNG()">📸 导出 PNG</button>
+    <button class="btn btn-outline" onclick="exportPDF()">📄 导出 PDF</button>
+  </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- Segment Tabs -->
+<div class="segment-tabs" id="segmentTabs"></div>
+
+<!-- Legend -->
+<div class="legend" id="legend"></div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+
+  <!-- Sidebar Filters -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-title">💠 CPU 品牌</div>
+    <div class="filter-chips" id="filterCpuBrand"></div>
+
+    <div class="sidebar-title">⚙️ CPU 型号</div>
+    <div class="filter-chips" id="filterCpuModel"></div>
+
+    <div class="sidebar-title">🧠 内存</div>
+    <div class="filter-chips" id="filterRam"></div>
+
+    <div class="sidebar-title">💾 硬盘</div>
+    <div class="filter-chips" id="filterStorage"></div>
+
+    <div class="sidebar-title">🎮 显卡</div>
+    <div class="filter-chips" id="filterGpu"></div>
+
+    <div class="sidebar-title">📐 屏幕尺寸</div>
+    <div class="filter-chips" id="filterScreen"></div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--text);">🔍 快速搜索</div>
+      <div class="search-box">
+        🔍 <input type="text" placeholder="型号 / PN / CPU..." id="searchInput" oninput="applyFilters()">
+      </div>
+    </div>
+
+    <!-- Bubble Chart -->
+    <div class="chart-section">
+      <div class="chart-title">📊 价格定位散点图 <span style="font-size:12px;color:#888;font-weight:400;">（气泡大小 = 内存容量，颜色 = 系列）</span></div>
+      <canvas id="bubbleChart" height="300"></canvas>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="bar-section">
+      <div class="bar-title">📈 实际批发价格对比（单位：¥）</div>
+      <canvas id="barChart" height="280"></canvas>
+    </div>
+
+    <!-- Roadmap -->
+    <div id="roadmap"></div>
+  </div>
+</div>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// ============================================================
+// 完整产品数据（从外部 products_data.js 加载并进行字段标准化）
+// ============================================================
+function normalizeProduct(p) {
+  // 有些条目 ram/storage 字段被 "—" 填充，或 ram/storage 互相颠倒，做容错
+  const rawRam = p.ram;
+  const rawStorage = p.storage;
+  const ramFilled = rawRam && rawRam !== "—" && !rawRam.includes("UMA") && !rawRam.includes("OLED") && !rawRam.includes("FHD") && !rawRam.includes("FHD+");
+  const storageFilled = rawStorage && rawStorage !== "—" && !rawStorage.includes("UMA") && !rawStorage.includes("OLED") && !rawStorage.includes("FHD");
+  const ramIsStorage = rawRam && (rawRam.includes("SSD") || rawRam.includes("SSD"));
+  const storageIsRam = rawStorage && !rawStorage.includes("SSD") && rawStorage !== "—" &&
+    (rawStorage === "8G" || rawStorage === "16G" || rawStorage === "32G" || /^\d+G$/.test(rawStorage));
+  const finalRam = ramFilled ? rawRam : (storageIsRam ? rawStorage : (ramIsStorage ? "—" : rawRam));
+  const finalStorage = storageFilled ? rawStorage : (ramIsStorage ? rawRam : (storageIsRam ? "—" : rawStorage));
+  // cpu 字段有时被数字（价格）填入
+  const cpuValid = p.cpu && p.cpu !== "—" && isNaN(Number(p.cpu)) && !p.cpu.includes(".");
+  const finalCpu = cpuValid ? p.cpu : "—";
+  const srpVal = typeof p.srp === "number" && p.srp > 100 ? p.srp : 0;
+  const realVal = typeof p.real === "number" && p.real > 100 ? p.real : 0;
+  const seg = p.segment || "slim";
+  return {
+    series: p.series || "未知系列",
+    seriesKey: p.seriesKey || "unknown",
+    model: p.model || "—",
+    pn: p.pn || "—",
+    cpu: finalCpu,
+    cpuBrand: p.cpuBrand || "—",
+    ram: finalRam,
+    storage: finalStorage,
+    gpu: p.gpu || "UMA",
+    screen: p.screen || "—",
+    resolution: p.resolution || "FHD",
+    color: p.color || "银色",
+    srp: srpVal,
+    real: realVal,
+    segment: seg,
+    highlight: !!p.highlight,
+  };
+}
+
+const hpProducts = (HP_PRODUCTS || []).map(normalizeProduct);
+
+// ============================================================
+// Series metadata
+// ============================================================
+// 系列顺序（X 轴从左到右，基于实际 seriesKey）
+const SERIES_ORDER = [
+  { key: "starbook",        label: "星Book / OmniBook",  color: "#0096D6", seg: "slim" },
+  { key: "starbookultra",    label: "星Book Ultra",        color: "#0077b0", seg: "slim" },
+  { key: "pavilionplus",     label: "Pavilion Plus",       color: "#00A78A", seg: "premium" },
+  { key: "starbookpro",      label: "OmniBook Pro",       color: "#0096D6", seg: "premium" },
+  { key: "pavilionx360",     label: "Pavilion x360",       color: "#5b5bda", seg: "premium" },
+  { key: "envy",             label: "ENVY",                color: "#7B3F9A", seg: "premium" },
+  { key: "spectre",          label: "Spectre",            color: "#9333ea", seg: "premium" },
+  { key: "victus",          label: "Victus",              color: "#E85D04", seg: "gaming" },
+  { key: "omenslim",         label: "OMEN Slim",           color: "#CC4400", seg: "gaming" },
+  { key: "omen",            label: "OMEN",                color: "#b91c1c", seg: "gaming" },
+  { key: "omenmax",         label: "OMEN MAX",             color: "#7f1d1d", seg: "gaming" },
+];
+
+// 将各产品线的 seriesKey 映射到 SERIES_ORDER key（直接一一映射）
+function getSeriesGroup(p) {
+  const sk = p.seriesKey;
+  return sk;
+}
+
+const seriesMeta = {
+  starbook:        { label: "星Book / OmniBook",  color: "#0096D6", segLabel: "轻薄本" },
+  starbookultra:    { label: "星Book Ultra",        color: "#0077b0", segLabel: "旗舰本" },
+  pavilionplus:     { label: "Pavilion Plus",        color: "#00A78A", segLabel: "旗舰本" },
+  starbookpro:      { label: "OmniBook Pro",        color: "#0096D6", segLabel: "旗舰本" },
+  pavilionx360:     { label: "Pavilion x360",        color: "#5b5bda", segLabel: "旗舰本" },
+  envy:             { label: "ENVY",                 color: "#7B3F9A", segLabel: "高端旗舰" },
+  spectre:          { label: "Spectre",              color: "#9333ea", segLabel: "高端旗舰" },
+  victus:           { label: "Victus 游戏本",        color: "#E85D04", segLabel: "游戏本" },
+  omenslim:         { label: "OMEN Slim",           color: "#CC4400", segLabel: "轻薄游戏本" },
+  omen:             { label: "OMEN",                 color: "#b91c1c", segLabel: "游戏本" },
+  omenmax:          { label: "OMEN MAX",             color: "#7f1d1d", segLabel: "发烧游戏本" },
+};
+
+const SEGMENT_TABS = [
+  { key: "all",      label: "全部",                icon: "🆙" },
+  { key: "slim",     label: "轻薄本",               icon: "💻" },
+  { key: "premium",  label: "旗舰 / 高端",          icon: "✨" },
+  { key: "gaming",   label: "游戏本",               icon: "🎮" },
+];
+
+// ============================================================
+// Filter state
+// ============================================================
+const filterState = {
+  segment: "",
+  cpuBrand: "",
+  cpuModel: "",
+  ram: "",
+  storage: "",
+  gpu: "",
+  screen: "",
+  search: "",
+};
+
+// ============================================================
+// Init
+// ============================================================
+function init() {
+  buildSegmentTabs();
+  buildLegend();
+  buildSidebarFilters();
+  renderRoadmap();
+  renderScatterChart();
+  renderBarChart();
+}
+
+function buildSegmentTabs() {
+  const el = document.getElementById("segmentTabs");
+  el.innerHTML = SEGMENT_TABS.map(t => {
+    const count = t.key === "all" ? hpProducts.length :
+      hpProducts.filter(p => getSegKey(p.segment) === t.key).length;
+    return `<div class="seg-tab${t.key === '' ? ' active' : ''}" data-seg="${t.key}" onclick="setSegment('${t.key}')">${t.icon} ${t.label} <span class="seg-count">${count}</span></div>`;
+  }).join("");
+}
+
+function buildLegend() {
+  const el = document.getElementById("legend");
+  const used = {};
+  hpProducts.forEach(p => { used[p.seriesKey] = (used[p.seriesKey] || seriesMeta[p.seriesKey] || { color: "#888", label: p.seriesKey }); });
+  el.innerHTML = Object.entries(used).map(([k, m]) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${m.color}"></div> ${m.label || k}</div>`
+  ).join("");
+}
+
+function getSegKey(segment) {
+  const map = { gaming: "gaming", slim: "slim", premium: "premium", business: "business" };
+  return map[segment] || segment;
+}
+
+function buildSidebarFilters() {
+  const cpus = [...new Set(hpProducts.map(p => p.cpu))].sort();
+  const rams = [...new Set(hpProducts.map(p => p.ram))].sort();
+  const storages = [...new Set(hpProducts.map(p => p.storage))].sort();
+  const gpus = [...new Set(hpProducts.map(p => p.gpu))].sort();
+  const screens = [...new Set(hpProducts.map(p => p.screen))].sort();
+
+  // CPU brand chips
+  const cpuBrands = [
+    { key: "AMD", cls: "amd", icon: "🟢" },
+    { key: "Intel", cls: "intel", icon: "🔵" },
+  ];
+  document.getElementById("filterCpuBrand").innerHTML = cpuBrands.map(b =>
+    `<div class="chip ${b.cls}" onclick="toggleFilter('cpuBrand','${b.key}',this)">${b.icon} ${b.key}</div>`
+  ).join("");
+
+  // CPU model
+  document.getElementById("filterCpuModel").innerHTML = cpus.map(c =>
+    `<div class="chip" onclick="toggleFilter('cpuModel','${c}',this)">${c}</div>`
+  ).join("");
+
+  // RAM
+  document.getElementById("filterRam").innerHTML = rams.map(r =>
+    `<div class="chip" onclick="toggleFilter('ram','${r}',this)">${r}</div>`
+  ).join("");
+
+  // Storage
+  document.getElementById("filterStorage").innerHTML = storages.map(s =>
+    `<div class="chip" onclick="toggleFilter('storage','${s}',this)">${s}</div>`
+  ).join("");
+
+  // GPU
+  document.getElementById("filterGpu").innerHTML = gpus.map(g => {
+    const cls = g.includes("RTX") ? "nvidia" : g === "UMA" ? "uma" : "";
+    const icon = g.includes("RTX") ? "🎮" : "🖥️";
+    return `<div class="chip ${cls}" onclick="toggleFilter('gpu','${g}',this)">${icon} ${g}</div>`;
+  }).join("");
+
+  // Screen
+  document.getElementById("filterScreen").innerHTML = screens.map(s =>
+    `<div class="chip" onclick="toggleFilter('screen','${s}',this)">${s}</div>`
+  ).join("");
+}
+
+function toggleFilter(key, value, el) {
+  const was = filterState[key];
+  if (was === value) {
+    filterState[key] = "";
+    el.classList.remove("active");
+  } else {
+    filterState[key] = value;
+    // Deactivate siblings
+    el.parentElement.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+  }
+  applyFilters();
+}
+
+function setSegment(seg) {
+  filterState.segment = seg;
+  document.querySelectorAll(".seg-tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.seg === seg);
+  });
+  applyFilters();
+}
+
+function applyFilters() {
+  filterState.search = document.getElementById("searchInput").value.trim().toLowerCase();
+
+  const segKey = filterState.segment;
+  const visible = hpProducts.filter(p => {
+    if (segKey && segKey !== "all" && getSegKey(p.segment) !== segKey) return false;
+    if (filterState.cpuBrand && p.cpuBrand !== filterState.cpuBrand) return false;
+    if (filterState.cpuModel && p.cpu !== filterState.cpuModel) return false;
+    if (filterState.ram && p.ram !== filterState.ram) return false;
+    if (filterState.storage && p.storage !== filterState.storage) return false;
+    if (filterState.gpu && p.gpu !== filterState.gpu) return false;
+    if (filterState.screen && p.screen !== filterState.screen) return false;
+    if (filterState.search) {
+      const hay = (p.model + " " + p.pn + " " + p.cpu).toLowerCase();
+      if (!hay.includes(filterState.search)) return false;
+    }
+    return true;
+  });
+
+  // Update card visibility
+  document.querySelectorAll(".product-card").forEach(card => {
+    const id = card.dataset.id;
+    const match = visible.find(p => p._id === id);
+    card.classList.toggle("hidden", !match);
+  });
+
+  // Update series section visibility
+  document.querySelectorAll(".series-section").forEach(sec => {
+    const visibleCards = sec.querySelectorAll(".product-card:not(.hidden)");
+    sec.style.display = visibleCards.length === 0 ? "none" : "";
+  });
+
+  // Update stats
+  updateStats(visible);
+
+  // Update tab counts
+  SEGMENT_TABS.forEach(t => {
+    const el = document.querySelector(`.seg-tab[data-seg="${t.key}"] .seg-count`);
+    if (el) el.textContent = t.key === "all" ? hpProducts.length : hpProducts.filter(p => getSegKey(p.segment) === t.key).length;
+  });
+}
+
+// ============================================================
+// Stats
+// ============================================================
+function updateStats(visible) {
+  const statsBar = document.getElementById("statsBar");
+  const validPrices = visible.filter(p => p.real > 100);
+  const avg = Math.round(validPrices.reduce((s, p) => s + p.real, 0) / (validPrices.length || 1));
+  const max = validPrices.length ? Math.max(...validPrices.map(p => p.real)) : 0;
+  const min = validPrices.length ? Math.min(...validPrices.map(p => p.real)) : 0;
+  const gaming = visible.filter(p => p.segment === "gaming").length;
+  const premium = visible.filter(p => p.segment === "premium").length;
+  const slim = visible.filter(p => p.segment === "slim").length;
+
+  statsBar.innerHTML = `
+    <div class="stat-item"><div class="stat-number">${visible.length}</div><div class="stat-label">产品总数</div></div>
+    <div class="stat-item"><div class="stat-number">${gaming}</div><div class="stat-label">🎮 游戏本</div></div>
+    <div class="stat-item"><div class="stat-number">${premium}</div><div class="stat-label">✨ 旗舰/高端</div></div>
+    <div class="stat-item"><div class="stat-number">${slim}</div><div class="stat-label">💻 轻薄本</div></div>
+    <div class="stat-item"><div class="stat-number">¥${avg}</div><div class="stat-label">平均实批价</div></div>
+    <div class="stat-item"><div class="stat-number">¥${min}~¥${max}</div><div class="stat-label">价格区间</div></div>
+  `;
+}
+
+// ============================================================
+// Render roadmap
+// ============================================================
+hpProducts.forEach((p, i) => { p._id = i; });
+
+function renderRoadmap() {
+  updateStats(hpProducts);
+
+  const roadmap = document.getElementById("roadmap");
+  roadmap.innerHTML = "";
+
+  // Group by series
+  const grouped = {};
+  hpProducts.forEach(p => {
+    if (!grouped[p.seriesKey]) grouped[p.seriesKey] = { title: p.series, items: [] };
+    grouped[p.seriesKey].items.push(p);
+  });
+
+  const segLabels = { gaming: "游戏本", slim: "轻薄本", premium: "旗舰本", business: "商务本" };
+  const segBadgeCls = { gaming: "gaming", slim: "slim", premium: "premium", business: "business" };
+
+  const seriesOrder = SERIES_ORDER.map(s => s.key);
+
+  for (const key of seriesOrder) {
+    if (!grouped[key]) continue;
+    const group = grouped[key];
+    const meta = seriesMeta[key] || { label: key, color: "#888" };
+
+    const section = document.createElement("div");
+    section.className = "series-section";
+    section.dataset.series = key;
+    section.dataset.segment = group.items[0]?.segment || "";
+
+    section.innerHTML = `
+      <div class="series-header">
+        <div class="series-badge" style="background:${meta.color}">${meta.label}</div>
+        <div class="series-count">${group.items.length} 个型号</div>
+      </div>
+      <div class="series-models">
+        ${group.items.map(p => renderCard(p, segLabels, segBadgeCls)).join("")}
+      </div>
+    `;
+    roadmap.appendChild(section);
+  }
+}
+
+function renderCard(p, segLabels, segBadgeCls) {
+  const discount = p.srp > p.real ? Math.round((1 - p.real / p.srp) * 100) : 0;
+  const gpuCls = p.gpu.includes("RTX") ? "gpu-nvidia" : "gpu-uma";
+  const cpuCls = p.cpuBrand === "AMD" ? "cpu-amd" : "cpu-intel";
+  const segLabel = segLabels[p.segment] || p.segment;
+  const segBCls = segBadgeCls[p.segment] || "";
+
+  return `
+    <div class="product-card ${p.seriesKey}" data-id="${p._id}" onclick="toggleCard(this)">
+      <span class="seg-badge ${segBCls}">${segLabel}</span>
+      <div class="product-top">
+        <div>
+          <div class="product-name">${p.highlight ? "⭐ " : ""}${p.model}</div>
+          <div class="product-pn">PN: ${p.pn}</div>
+        </div>
+        <div class="product-price-block">
+          <div class="product-price-srp">¥${p.srp.toLocaleString()}</div>
+          <div class="product-price-real${discount >= 10 ? ' highlight-price' : ''}">¥${p.real.toLocaleString()} ${discount ? `↓${discount}%` : ""}</div>
+        </div>
+      </div>
+      <div class="product-specs">
+        <span class="spec-tag ${cpuCls}">${p.cpuBrand === "AMD" ? "AMD🟢" : "Intel🔵"} ${p.cpu}</span>
+        <span class="spec-tag ${gpuCls}">${p.gpu}</span>
+        <span class="spec-tag ram">${p.ram}</span>
+        <span class="spec-tag storage">${p.storage}</span>
+        <span class="spec-tag screen">${p.screen}</span>
+        <span class="spec-tag color">${p.color}</span>
+      </div>
+      <div class="product-detail">
+        <div class="detail-row">
+          <div class="detail-item"><div class="detail-label">CPU</div><div class="detail-value">${p.cpuBrand} ${p.cpu}</div></div>
+          <div class="detail-item"><div class="detail-label">内存</div><div class="detail-value">${p.ram}</div></div>
+          <div class="detail-item"><div class="detail-label">硬盘</div><div class="detail-value">${p.storage}</div></div>
+          <div class="detail-item"><div class="detail-label">显卡</div><div class="detail-value">${p.gpu}</div></div>
+          <div class="detail-item"><div class="detail-label">屏幕</div><div class="detail-value">${p.screen}</div></div>
+          <div class="detail-item"><div class="detail-label">分辨率</div><div class="detail-value">${p.resolution}</div></div>
+          <div class="detail-item"><div class="detail-label">颜色</div><div class="detail-value">${p.color}</div></div>
+          <div class="detail-item"><div class="detail-label">建议零售价</div><div class="detail-value">¥${p.srp.toLocaleString()}</div></div>
+          <div class="detail-item"><div class="detail-label">实批价</div><div class="detail-value" style="color:var(--hp-green)">¥${p.real.toLocaleString()}</div></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#888;">点击卡片收起详情</div>
+      </div>
+    </div>`;
+}
+
+function toggleCard(card) {
+  card.classList.toggle("expanded");
+}
+
+// ============================================================
+// Scatter Chart — 系列 X 轴（匹配截图布局）
+// ============================================================
+let tooltipEl = null;
+
+function renderScatterChart() {
+  const canvas = document.getElementById("bubbleChart");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width = canvas.offsetWidth * 2;
+  const H = canvas.height = 320 * 2;
+  ctx.scale(2, 2);
+  const w = canvas.offsetWidth;
+  const h = 320;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Tooltip element
+  if (!tooltipEl) {
+    tooltipEl = document.createElement("div");
+    tooltipEl.style.cssText = "position:absolute;background:#1a1a2e;color:#fff;padding:10px 14px;border-radius:10px;font-size:12px;pointer-events:none;display:none;z-index:200;max-width:240px;box-shadow:0 4px 20px rgba(0,0,0,0.3);line-height:1.7;";
+    canvas.parentElement.style.position = "relative";
+    canvas.parentElement.appendChild(tooltipEl);
+  }
+
+  const pad = { left: 55, right: 15, top: 20, bottom: 55 };
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
+  const priceMin = 2500, priceMax = 15500;
+  const toY = price => pad.top + plotH - ((price - priceMin) / (priceMax - priceMin)) * plotH;
+  const nSeries = SERIES_ORDER.length;
+  const colW = plotW / nSeries;
+
+  const colorMap = {};
+  SERIES_ORDER.forEach(s => { colorMap[s.key] = s.color; });
+
+  // Y grid
+  ctx.strokeStyle = "#eee";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  for (let price = 4000; price <= 15000; price += 2000) {
+    const y = toY(price);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Y labels
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#888";
+  ctx.font = "10px Segoe UI";
+  for (let price = 4000; price <= 15000; price += 2000) {
+    ctx.fillText("¥" + price.toLocaleString(), pad.left - 5, toY(price) + 4);
+  }
+
+  // X series labels
+  ctx.textAlign = "center";
+  SERIES_ORDER.forEach((s, i) => {
+    const cx = pad.left + i * colW + colW / 2;
+    // vertical grid
+    ctx.strokeStyle = "#f0f0f0";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath(); ctx.moveTo(cx, pad.top); ctx.lineTo(cx, pad.top + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+    // label
+    const lbl = s.label.length > 11 ? s.label.substring(0, 10) + "..." : s.label;
+    ctx.fillStyle = s.color;
+    ctx.font = "bold 10px Segoe UI";
+    ctx.fillText(lbl, cx, pad.top + plotH + 14);
+    ctx.beginPath();
+    ctx.arc(cx, pad.top + plotH + 23, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = s.color;
+    ctx.fill();
+  });
+
+  // X title
+  ctx.fillStyle = "#bbb";
+  ctx.font = "10px Segoe UI";
+  ctx.fillText("产品系列 →", w / 2, h - 3);
+
+  // Y title (rotated)
+  ctx.save();
+  ctx.translate(10, h / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#aaa";
+  ctx.font = "11px Segoe UI";
+  ctx.fillText("价格 (¥)", 0, 0);
+  ctx.restore();
+
+  // Plot products
+  const filtered = getFilteredProducts();
+  const bucketCounts = {};
+  SERIES_ORDER.forEach(s => { bucketCounts[s.key] = 0; });
+  filtered.forEach(p => {
+    const grp = getSeriesGroup(p);
+    if (grp && bucketCounts[grp] !== undefined) bucketCounts[grp]++;
+  });
+
+  filtered.forEach(p => {
+    const grp = getSeriesGroup(p);
+    if (!grp) return;
+    const col = SERIES_ORDER.findIndex(s => s.key === grp);
+    if (col < 0) return;
+
+    const bucketCount = bucketCounts[grp];
+    const idxInBucket = filtered.filter(x => getSeriesGroup(x) === grp).indexOf(p);
+    const jitterX = (Math.random() - 0.5) * colW * 0.55;
+    const cx = pad.left + col * colW + colW / 2 + jitterX;
+    const cy = toY(p.real);
+
+    const ramMB = parseInt(p.ram) || 16;
+    const r = Math.max(7, Math.min(18, ramMB * 0.38));
+    const color = colorMap[grp] || "#888";
+
+    // shadow
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 2, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.08)";
+    ctx.fill();
+
+    // dot
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = color + (p.highlight ? "ff" : "aa");
+    ctx.fill();
+    ctx.strokeStyle = p.highlight ? "#fff" : color;
+    ctx.lineWidth = p.highlight ? 2 : 1;
+    ctx.stroke();
+
+    p._dot = { cx, cy, r: r + 3 };
+  });
+
+  // Tooltip
+  canvas.onmousemove = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (canvas.width / 2 / rect.width);
+    const my = (e.clientY - rect.top) * (canvas.height / 2 / rect.height);
+    let found = null;
+    filtered.forEach(p => {
+      if (!p._dot) return;
+      const dx = mx - p._dot.cx, dy = my - p._dot.cy;
+      if (Math.sqrt(dx*dx+dy*dy) <= p._dot.r) found = p;
+    });
+    if (found) {
+      const grp = SERIES_ORDER.find(s => s.key === getSeriesGroup(found));
+      tooltipEl.innerHTML = '<div style="font-weight:700;font-size:13px;margin-bottom:3px">' + found.model + '</div>' +
+        '<div style="color:#aaa;font-size:10px;margin-bottom:5px">' + (grp ? grp.label : found.seriesKey) + '</div>' +
+        '<div>实批价: <b style="color:#4ade80">¥' + found.real.toLocaleString() + '</b></div>' +
+        '<div>建议零售: <s>¥' + found.srp.toLocaleString() + '</s></div>' +
+        '<div style="margin-top:4px">' + (found.cpuBrand === "AMD" ? "AMD" : "Intel") + ' ' + found.cpu + ' · ' + found.gpu + '</div>' +
+        '<div>' + found.ram + ' · ' + found.storage + ' · ' + found.screen + '</div>';
+      tooltipEl.style.display = "block";
+      const tx = e.clientX - rect.left + 12;
+      const ty = e.clientY - rect.top - 80;
+      tooltipEl.style.left = Math.min(tx, rect.width - 250) + "px";
+      tooltipEl.style.top = Math.max(ty, 4) + "px";
+      canvas.style.cursor = "crosshair";
+    } else {
+      tooltipEl.style.display = "none";
+      canvas.style.cursor = "default";
+    }
+  };
+  canvas.onmouseleave = () => { tooltipEl.style.display = "none"; };
+
+  // Legend
+  const uniqueColors = [];
+  const seen = new Set();
+  SERIES_ORDER.forEach(s => {
+    if (!seen.has(s.color)) { seen.add(s.color); uniqueColors.push(s); }
+  });
+  ctx.textAlign = "left";
+  uniqueColors.slice(0, 8).forEach((item, i) => {
+    const lx = w - 170;
+    const ly = 18 + i * 15;
+    ctx.beginPath();
+    ctx.arc(lx + 5, ly, 5, 0, Math.PI * 2);
+    ctx.fillStyle = item.color;
+    ctx.fill();
+    ctx.fillStyle = "#555";
+    ctx.font = "10px Segoe UI";
+    ctx.fillText(item.label, lx + 14, ly + 4);
+  });
+}
+
+function getFilteredProducts() {
+  return hpProducts.filter(p => {
+    if (filterState.segment && p.segment !== filterState.segment) return false;
+    if (filterState.cpuBrand && p.cpuBrand !== filterState.cpuBrand) return false;
+    if (filterState.cpuModel && p.cpu !== filterState.cpuModel) return false;
+    if (filterState.ram && p.ram !== filterState.ram) return false;
+    if (filterState.storage && p.storage !== filterState.storage) return false;
+    if (filterState.gpu && p.gpu !== filterState.gpu) return false;
+    if (filterState.screen && p.screen !== filterState.screen) return false;
+    if (filterState.search) {
+      const hay = (p.model + " " + p.pn + " " + p.cpu).toLowerCase();
+      if (!hay.includes(filterState.search.toLowerCase())) return false;
+    }
+    return true;
+  });
+}
+
+// ============================================================
+// Horizontal Bar Chart
+// ============================================================
+function renderBarChart() {
+  const canvas = document.getElementById("barChart");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width = canvas.offsetWidth * 2;
+  const H = canvas.height = 280 * 2;
+  ctx.scale(2, 2);
+  const w = canvas.offsetWidth;
+  const h = 280;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const pad = { left: 130, right: 20, top: 20, bottom: 20 };
+  const plotW = w - pad.left - pad.right;
+  const barH = 18;
+  const gap = 6;
+
+  // Take top 20 by price
+  const top = [...hpProducts].sort((a, b) => b.real - a.real).slice(0, 20);
+
+  const priceMax = Math.max(...top.map(p => p.real));
+  const toX = price => (price / priceMax) * plotW;
+
+  const colorMap = {
+    starbook: "#0096D6", starbookultra: "#0077b0",
+    pavilionplus: "#00A78A", starbookpro: "#0096D6",
+    pavilionx360: "#5b5bda", envy: "#7B3F9A", spectre: "#9333ea",
+    victus: "#E85D04", omenslim: "#CC4400", omen: "#b91c1c", omenmax: "#7f1d1d",
+  };
+
+  top.forEach((p, i) => {
+    const y = pad.top + i * (barH + gap);
+    const color = colorMap[p.seriesKey] || "#888";
+
+    // Label
+    ctx.fillStyle = "#444";
+    ctx.font = "11px Segoe UI";
+    ctx.textAlign = "right";
+    const label = p.model.length > 22 ? p.model.substring(0, 20) + "…" : p.model;
+    ctx.fillText(label, pad.left - 6, y + barH - 4);
+
+    // Background bar
+    ctx.fillStyle = "#f0f0f0";
+    ctx.fillRect(pad.left, y, plotW, barH);
+
+    // Value bar
+    ctx.fillStyle = color + "cc";
+    ctx.fillRect(pad.left, y, toX(p.real), barH);
+
+    // SRP line
+    const srpX = pad.left + toX(p.srp);
+    ctx.strokeStyle = "#bbb";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 2]);
+    ctx.beginPath();
+    ctx.moveTo(srpX, y);
+    ctx.lineTo(srpX, y + barH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Price label
+    ctx.fillStyle = "#333";
+    ctx.font = "bold 10px Segoe UI";
+    ctx.textAlign = "left";
+    ctx.fillText("¥" + p.real.toLocaleString(), pad.left + toX(p.real) + 4, y + barH - 4);
+  });
+}
+
+// ============================================================
+// Export
+// ============================================================
+async function exportPNG() {
+  showLoading("正在生成 PNG 图片...");
+  try {
+    const el = document.getElementById("roadmap");
+    const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false });
+    const link = document.createElement("a");
+    link.download = `HP-Roadmap-${new Date().toISOString().slice(0,10)}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  } catch (e) { alert("导出失败: " + e.message); }
+  finally { hideLoading(); }
+}
+
+async function exportPDF() {
+  showLoading("正在生成 PDF 文件...");
+  try {
+    const el = document.getElementById("roadmap");
+    const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: canvas.width > canvas.height ? "l" : "p", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+    pdf.save(`HP-Roadmap-${new Date().toISOString().slice(0:10)}.pdf`);
+  } catch (e) { alert("导出失败: " + e.message); }
+  finally { hideLoading(); }
+}
+
+function showLoading(msg) {
+  document.getElementById("loading-msg").textContent = msg;
+  document.getElementById("loading-overlay").style.display = "flex";
+}
+function hideLoading() {
+  document.getElementById("loading-overlay").style.display = "none";
+}
+
+// ============================================================
+// Resize handling for charts
+// ============================================================
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { renderScatterChart(); renderBarChart(); }, 300);
+});
+
+init();
+</script>
+</body>
+</html>
