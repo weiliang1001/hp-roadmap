@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP 产品配置对照表</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 28px 40px 20px; border-bottom: 1px solid #334155; }
+  .header h1 { font-size: 1.8em; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }
+  .header p { color: #94a3b8; font-size: 0.9em; }
+  .badge { display: inline-block; background: #3b82f6; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.8em; margin-left: 8px; }
+  .toolbar { background: #1e293b; padding: 16px 40px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #334155; }
+  .search-box { flex: 1; min-width: 220px; }
+  .search-box input { width: 100%; padding: 9px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; font-size: 0.9em; outline: none; }
+  .search-box input:focus { border-color: #3b82f6; }
+  .filter-group { display: flex; gap: 8px; align-items: center; }
+  select { padding: 9px 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; font-size: 0.85em; outline: none; cursor: pointer; }
+  .stats { color: #64748b; font-size: 0.85em; padding: 0 4px; white-space: nowrap; }
+  .table-wrap { padding: 20px 40px 40px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85em; min-width: 1100px; }
+  thead { position: sticky; top: 0; z-index: 10; }
+  th { background: #1e293b; color: #94a3b8; font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 2px solid #334155; white-space: nowrap; cursor: pointer; user-select: none; }
+  th:hover { color: #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #1e293b; vertical-align: middle; }
+  tr:hover td { background: #1e293b; }
+  .series-cell { font-weight: 600; color: #60a5fa; max-width: 180px; }
+  .model-cell { font-weight: 500; color: #f8fafc; font-family: 'Consolas', monospace; font-size: 0.9em; }
+  .pn-cell { color: #94a3b8; font-family: 'Consolas', monospace; font-size: 0.85em; }
+  .cpu-cell { color: #a5f3fc; font-family: 'Consolas', monospace; }
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.78em; font-weight: 600; }
+  .tag-amd { background: #431407; color: #fb923c; }
+  .tag-intel { background: #1e3a5f; color: #93c5fd; }
+  .ram-cell { color: #86efac; font-family: 'Consolas', monospace; }
+  .storage-cell { color: #d8b4fe; font-family: 'Consolas', monospace; }
+  .gpu-cell { color: #fcd34d; font-family: 'Consolas', monospace; }
+  .screen-cell { color: #f9a8d4; text-align: center; }
+  .resolution-cell { text-align: center; }
+  .resolution-cell span { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.78em; }
+  .res-fhd { background: #1e3a2f; color: #6ee7b7; }
+  .res-uhd { background: #3b2f5c; color: #c4b5fd; }
+  .res-qhd { background: #1e3a4d; color: #7dd3fc; }
+  .color-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #475569; vertical-align: middle; }
+  .price-srp { color: #64748b; text-decoration: line-through; font-family: 'Consolas', monospace; }
+  .price-real { color: #4ade80; font-weight: 700; font-family: 'Consolas', monospace; }
+  .price-cn2 { color: #facc15; font-family: 'Consolas', monospace; font-size: 0.9em; }
+  .segment-tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.75em; font-weight: 600; }
+  .seg-slim { background: #1e3a3a; color: #5eead4; }
+  .seg-game { background: #3b1f1f; color: #f87171; }
+  .seg-pro { background: #1e3a5f; color: #93c5fd; }
+  .seg-mainstream { background: #2d2d1e; color: #facc15; }
+  .highlight-row td { background: #1e2a3a; }
+  .no-result { text-align: center; padding: 60px; color: #475569; font-size: 1.1em; }
+  .footer { text-align: center; padding: 20px; color: #475569; font-size: 0.8em; border-top: 1px solid #1e293b; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>HP 产品配置对照表 <span class="badge" id="totalCount">203 款</span></h1>
+  <p>数据来源：CNB 报价单 &nbsp;|&nbsp; 最后更新：2026-04-03</p>
+</div>
+<div class="toolbar">
+  <div class="search-box"><input type="text" id="searchInput" placeholder="搜索型号、系列、CPU、PN..."></div>
+  <div class="filter-group">
+    <select id="filterBrand"><option value="">全部 CPU</option><option value="AMD">AMD</option><option value="Intel">Intel</option></select>
+    <select id="filterSegment"><option value="">全部分类</option><option value="slim">轻薄本</option><option value="game">游戏本</option><option value="pro">专业本</option><option value="mainstream">主流本</option></select>
+    <select id="filterResolution"><option value="">全部分辨率</option><option value="FHD">FHD</option><option value="QHD">QHD/2K</option><option value="UHD">UHD/4K</option></select>
+    <span class="stats" id="statsText">显示 203 条</span>
+  </div>
+</div>
+<div class="table-wrap">
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th data-key="series">系列</th>
+        <th data-key="model">型号</th>
+        <th data-key="pn">PN</th>
+        <th data-key="cpu">CPU</th>
+        <th data-key="ram">内存</th>
+        <th data-key="storage">硬盘</th>
+        <th data-key="gpu">显卡</th>
+        <th data-key="screen">屏幕</th>
+        <th data-key="resolution">分辨率</th>
+        <th>颜色</th>
+        <th data-key="srp">标价</th>
+        <th data-key="real">实际价格</th>
+        <th data-key="cn2">渠道价</th>
+        <th data-key="segment">分类</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="no-result" id="noResult" style="display:none"><span>没有找到匹配的产品</span></div>
+</div>
+<div class="footer">HP 产品配置对照表 · 共 203 款产品 · 数据来源 CNB</div>
+<script>
+const SERIES_COLORS = {starbook:'#3b82f6',omnibook:'#8b5cf6',victus:'#10b981',omen:'#ef4444',envy:'#f59e0b',spectre:'#ec4899',pavilion:'#06b6d4',other:'#64748b'};
+function getColorDot(color){const m={'银色':'#c0c0c0','灰色':'#808080','黑色':'#1f1f1f','金色':'#ffd700','蓝色':'#3b82f6','粉色':'#ec4899','白色':'#f8fafc','绿色':'#22c55e','紫色':'#a855f7','红色':'#ef4444','星空':'#6b21a8'};return m[color]||'#475569';}
+function getSegmentLabel(s){return {slim:'轻薄本',game:'游戏本',pro:'专业本',mainstream:'主流本'}[s]||s;}
+function renderTable(data){const tbody=document.getElementById('tableBody');const noResult=document.getElementById('noResult');if(!data.length){tbody.innerHTML='';noResult.style.display='block';document.getElementById('statsText').textContent='显示 0 条';return;}noResult.style.display='none';let html='';data.forEach(p=>{const segClass={slim:'seg-slim',game:'seg-game',pro:'seg-pro',mainstream:'seg-mainstream'}[p.segment]||'';const brandClass=p.cpuBrand==='AMD'?'tag-amd':'tag-intel';const resClass={FHD:'res-fhd',UHD:'res-uhd',QHD:'res-qhd'}[p.resolution]||'';const colorDot='<span class="color-dot" style="background:'+getColorDot(p.color)+'" title="'+p.color+'"></span>';const priceSrp=p.srp?'¥'+p.srp.toLocaleString():'-';const priceReal=p.real?'¥'+p.real.toLocaleString():'-';const priceCn2=p.cn2?'¥'+p.cn2.toLocaleString():'-';const hlClass=p.highlight?'highlight-row':'';html+='<tr class="'+hlClass+'"><td class="series-cell">'+p.series+'</td><td class="model-cell">'+p.model+'</td><td class="pn-cell">'+p.pn+'</td><td class="cpu-cell"><span class="tag '+brandClass+'">'+p.cpuBrand+'</span> '+p.cpu+'</td><td class="ram-cell">'+p.ram+'</td><td class="storage-cell">'+p.storage+'</td><td class="gpu-cell">'+(p.gpu||'-')+'</td><td class="screen-cell">'+p.screen+'"</td><td class="resolution-cell"><span class="'+resClass+'">'+p.resolution+'</span></td><td>'+colorDot+' '+p.color+'</td><td class="price-srp">'+priceSrp+'</td><td class="price-real">'+priceReal+'</td><td class="price-cn2">'+priceCn2+'</td><td><span class="segment-tag '+segClass+'">'+getSegmentLabel(p.segment)+'</span></td></tr>';});tbody.innerHTML=html;document.getElementById('statsText').textContent='显示 '+data.length+' 条';}
+(async()=>{const resp=await fetch('https://raw.githubusercontent.com/weiliang1001/hp-roadmap/main/products_data.js');const text=await resp.text();const json=text.match(/const HP_PRODUCTS = (\[[\s\S]*?\]);/);if(!json){document.getElementById('tableBody').innerHTML='<tr><td colspan="14" style="color:#ef4444;padding:40px;text-align:center">数据加载失败</td></tr>';return;}let products;try{products=eval(json[1]);}catch(e){document.getElementById('tableBody').innerHTML='<tr><td colspan="14" style="color:#ef4444;padding:40px;text-align:center">数据解析失败</td></tr>';return;}document.getElementById('totalCount').textContent=products.length+' 款';let filtered=[...products];let currentSort={key:'series',asc:true};function applyFilters(){const kw=document.getElementById('searchInput').value.toLowerCase();const brand=document.getElementById('filterBrand').value;const seg=document.getElementById('filterSegment').value;const res=document.getElementById('filterResolution').value;filtered=products.filter(p=>{if(kw&&!p.model.toLowerCase().includes(kw)&&!p.series.toLowerCase().includes(kw)&&!p.cpu.toLowerCase().includes(kw)&&!p.pn.toLowerCase().includes(kw))return false;if(brand&&p.cpuBrand!==brand)return false;if(seg&&p.segment!==seg)return false;if(res&&p.resolution!==res)return false;return true;});filtered.sort((a,b)=>{let av=a[currentSort.key]||'',bv=b[currentSort.key]||'';if(typeof av==='number')return currentSort.asc?av-bv:bv-av;av=String(av).toLowerCase();bv=String(bv).toLowerCase();return currentSort.asc?av.localeCompare(bv):bv.localeCompare(av);});renderTable(filtered);}document.getElementById('searchInput').addEventListener('input',applyFilters);document.getElementById('filterBrand').addEventListener('change',applyFilters);document.getElementById('filterSegment').addEventListener('change',applyFilters);document.getElementById('filterResolution').addEventListener('change',applyFilters);document.querySelectorAll('th[data-key]').forEach(th=>{th.addEventListener('click',()=>{const k=th.dataset.key;if(currentSort.key===k)currentSort.asc=!currentSort.asc;else{currentSort.key=k;currentSort.asc=true;}document.querySelectorAll('th').forEach(t=>{t.style.color='';});th.style.color='#60a5fa';applyFilters();});});applyFilters();})();
+</script>
+</body>
+</html>
