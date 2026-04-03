@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026年主流笔记本电脑品牌行情分析报告</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F8FEF;
+            --primary-dark: #2D6BE4;
+            --secondary: #8B5CF6;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+            --bg: #0F172A;
+            --card: #1E293B;
+            --card-hover: #273548;
+            --border: #334155;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --game-color: #EF4444;
+            --slim-color: #10B981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== 背景 ========== */
+        .bg-grid {
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(rgba(79,143,239,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79,143,239,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none; z-index: 0;
+        }
+        .bg-glow {
+            position: fixed; width: 600px; height: 600px;
+            border-radius: 50%; filter: blur(120px);
+            opacity: 0.12; pointer-events: none; z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+        .bg-glow-1 { background: var(--primary); top: -200px; left: -100px; }
+        .bg-glow-2 { background: var(--secondary); bottom: -200px; right: -100px; animation-delay: -4s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0,0); }
+            50% { transform: translate(30px, 20px); }
+        }
+
+        /* ========== 主容器 ========== */
+        .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* ========== 头部 ========== */
+        .header {
+            text-align: center; padding: 30px 0 20px;
+            animation: fadeDown 0.6s ease;
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header h1 {
+            font-size: 1.8em; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
+        }
+        .header p { color: var(--text-muted); font-size: 0.9em; margin-bottom: 12px; }
+        .badge {
+            display: inline-block;
+            background: rgba(79,143,239,0.12);
+            border: 1px solid rgba(79,143,239,0.25);
+            color: var(--primary); padding: 2px 10px;
+            border-radius: 20px; font-size: 0.75em; margin: 3px;
+        }
+        .badge-game { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); color: #f87171; }
+        .badge-slim { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.25); color: #34d399; }
+
+        /* ========== KPI 卡片 ========== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px; margin-bottom: 16px;
+        }
+        .kpi-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; text-align: center;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .kpi-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); border-color: rgba(79,143,239,0.3); }
+        .kpi-card:hover::before { opacity: 1; }
+        .kpi-num {
+            font-size: 1.5em; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .kpi-label { font-size: 0.75em; color: var(--text-muted); margin-top: 4px; }
+        .kpi-sub { font-size: 0.7em; color: var(--text-muted); margin-top: 2px; }
+
+        /* ========== 选项卡 ========== */
+        .tabs {
+            display: flex; gap: 4px; background: var(--card);
+            border-radius: 12px; padding: 6px; margin: 20px 0;
+            border: 1px solid var(--border); overflow-x: auto;
+            scrollbar-width: none; animation: fadeUp 0.5s ease;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-btn {
+            flex: 1; min-width: 90px; padding: 10px 14px;
+            background: transparent; border: none; border-radius: 8px;
+            color: var(--text-muted); font-family: inherit;
+            font-size: 0.85em; font-weight: 500; cursor: pointer;
+            transition: all 0.3s ease; white-space: nowrap;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .tab-btn:hover { background: rgba(79,143,239,0.1); color: var(--text); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; box-shadow: 0 4px 12px rgba(79,143,239,0.4);
+        }
+        .tab-icon { font-size: 1.1em; }
+
+        /* 选项卡内容 */
+        .tab-content { display: none; animation: fadeUp 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        /* ========== 卡片 ========== */
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 20px; margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .card:hover { border-color: rgba(79,143,239,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .card-title {
+            font-size: 1em; font-weight: 600; color: var(--text);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .card-title .icon { font-size: 1.1em; }
+
+        /* ========== 表格 ========== */
+        .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+        thead th {
+            background: rgba(79,143,239,0.1); color: var(--primary);
+            font-weight: 600; padding: 10px 12px;
+            text-align: center; border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        tbody tr {
+            border-bottom: 1px solid rgba(51,65,85,0.5);
+            transition: all 0.2s ease; cursor: pointer;
+        }
+        tbody tr:hover {
+            background: rgba(79,143,239,0.06);
+            transform: scale(1.008);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        tbody td { padding: 10px 12px; text-align: center; vertical-align: middle; }
+
+        .rank-1 { color: #ffd700; font-weight: 700; }
+        .rank-2 { color: #c0c0c0; font-weight: 700; }
+        .rank-3 { color: #cd7f32; font-weight: 700; }
+
+        .brand-tag {
+            display: inline-block; padding: 3px 8px;
+            border-radius: 6px; font-size: 0.8em; font-weight: 600; color: white;
+        }
+        .brand-lenovo { background: linear-gradient(135deg, #e60012, #ff4444); }
+        .brand-hp { background: linear-gradient(135deg, #0096d6, #00b4ff); }
+        .brand-dell { background: linear-gradient(135deg, #007db8, #00a0d8); }
+        .brand-asus { background: linear-gradient(135deg, #005a9e, #0077cc); }
+        .brand-mechrevo { background: linear-gradient(135deg, #00a4de, #00d4ff); }
+        .brand-honor { background: linear-gradient(135deg, #00b4d8, #00e5ff); }
+        .brand-xiaomi { background: linear-gradient(135deg, #ff6700, #ff9500); }
+        .brand-thunderbot { background: linear-gradient(135deg, #ff4500, #ff6a00); }
+        .brand-other { background: linear-gradient(135deg, #555, #777); }
+        .brand-player { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+
+        .price { font-weight: 700; color: #f87171; }
+        .sales { color: #34d399; font-weight: 600; }
+
+        .trend {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 8px; border-radius: 6px; font-size: 0.75em; font-weight: 600;
+        }
+        .trend.up { background: rgba(239,68,68,0.15); color: #f87171; }
+        .trend.down { background: rgba(16,185,129,0.15); color: #34d399; }
+        .trend.stable { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+        /* ========== 图表 ========== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .chart-container {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 16px;
+            transition: all 0.3s ease;
+        }
+        .chart-container:hover {
+            border-color: rgba(79,143,239,0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            transform: translateY(-2px);
+        }
+        .chart-title {
+            font-size: 0.85em; font-weight: 600; color: var(--text-muted);
+            margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+        }
+        .chart { width: 100%; height: 280px; }
+        .chart-full { grid-column: 1 / -1; }
+        .chart-full .chart { height: 300px; }
+        .chart-half .chart { height: 220px; }
+
+        /* ========== 价格带 ========== */
+        .price-zone {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px; margin-top: 12px;
+        }
+        .zone-card {
+            background: var(--card); border-radius: 12px; padding: 16px;
+            border: 1px solid var(--border); text-align: center;
+            transition: all 0.3s ease;
+        }
+        .zone-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .zone-card.game { border-color: rgba(239,68,68,0.3); }
+        .zone-card.slim { border-color: rgba(16,185,129,0.3); }
+        .zone-range { font-size: 1.2em; font-weight: 700; margin-bottom: 6px; }
+        .zone-card.game .zone-range { color: #f87171; }
+        .zone-card.slim .zone-range { color: #34d399; }
+        .zone-desc { font-size: 0.78em; color: var(--text-muted); }
+
+        /* ========== 建议卡片 ========== */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+        }
+        .rec-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px;
+            transition: all 0.3s ease;
+        }
+        .rec-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border-color: rgba(79,143,239,0.3);
+        }
+        .rec-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 0.72em; font-weight: 700; margin-bottom: 8px;
+        }
+        .rec-badge.top { background: linear-gradient(90deg, #ffd700, #ff8c00); color: #000; }
+        .rec-badge.value { background: linear-gradient(90deg, #34d399, #10b981); color: #000; }
+        .rec-badge.business { background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: #fff; }
+        .rec-badge.game { background: linear-gradient(90deg, #f87171, #ef4444); color: #fff; }
+        .rec-card h4 { color: var(--text); font-size: 1em; margin-bottom: 6px; }
+        .rec-model { color: var(--text-muted); font-size: 0.78em; margin-bottom: 8px; }
+        .rec-price { color: #f87171; font-weight: 700; font-size: 1.2em; }
+        .rec-reason {
+            color: var(--text-muted); font-size: 0.78em;
+            margin-top: 8px; padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ========== 市场洞察列表 ========== */
+        .insight-list { list-style: none; }
+        .insight-list li {
+            padding: 12px 0; border-bottom: 1px solid rgba(51,65,85,0.4);
+            display: flex; align-items: flex-start; gap: 10px;
+            transition: all 0.2s;
+        }
+        .insight-list li:last-child { border-bottom: none; }
+        .insight-list li:hover { background: rgba(79,143,239,0.04); padding-left: 8px; }
+        .bullet {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--primary); flex-shrink: 0; margin-top: 6px;
+        }
+
+        /* ========== 预览框 ========== */
+        .preview-popup {
+            position: fixed; z-index: 9999;
+            background: rgba(15,23,42,0.97);
+            border: 1px solid rgba(79,143,239,0.4);
+            border-radius: 12px; padding: 14px 18px;
+            min-width: 230px; max-width: 300px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+            pointer-events: none; opacity: 0;
+            transform: translateY(8px) scale(0.95);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            backdrop-filter: blur(20px);
+        }
+        .preview-popup.show { opacity: 1; transform: translateY(0) scale(1); }
+        .pp-title { font-size: 0.9em; font-weight: 700; color: var(--primary); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        .pp-row { display: flex; justify-content: space-between; font-size: 0.78em; margin: 4px 0; color: var(--text-muted); }
+        .pp-row span:last-child { color: var(--text); font-weight: 500; }
+        .pp-tag { display: inline-block; background: rgba(79,143,239,0.15); color: var(--primary); border-radius: 6px; padding: 2px 8px; font-size: 0.72em; margin-top: 6px; }
+
+        /* ========== 进度条 ========== */
+        .brand-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .brand-bar .name { width: 65px; font-weight: 600; color: var(--text-muted); font-size: 0.85em; }
+        .brand-bar .bar-bg { flex: 1; height: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .brand-bar .bar-fill { height: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 0.75em; font-weight: 700; color: #fff; }
+        .brand-bar .count { width: 40px; text-align: right; color: var(--text-muted); font-size: 0.82em; }
+
+        /* ========== 入场动画 ========== */
+        .fade-in {
+            opacity: 1; transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 900px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 1.3em; }
+            table { font-size: 0.72em; }
+            thead th, tbody td { padding: 8px 6px; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1>💻 2026年主流笔记本电脑品牌行情分析</h1>
+        <p>京东平台销量数据 · 联想、惠普、戴尔、华硕、机械革命等主流品牌对比</p>
+        <div>
+            <span class="badge">📅 2026年3月30日</span>
+            <span class="badge">📊 数据来源：京东实时销量</span>
+            <span class="badge badge-game">🎮 游戏本 Top10</span>
+            <span class="badge badge-slim">💼 轻薄本 Top10</span>
+        </div>
+    </div>
+
+    <!-- KPI概览 -->
+    <div class="kpi-grid">
+        <div class="kpi-card fade-in">
+            <div class="kpi-num">60%</div>
+            <div class="kpi-label">联想市场占比</div>
+            <div class="kpi-sub">双料冠军</div>
+        </div>
+        <div class="kpi-card fade-in">
+            <div class="kpi-num">100万+</div>
+            <div class="kpi-label">轻薄本销量冠军</div>
+            <div class="kpi-sub">小新Pro14GT</div>
+        </div>
+        <div class="kpi-card fade-in">
+            <div class="kpi-num">¥8-10K</div>
+            <div class="kpi-label">游戏本主流价格带</div>
+            <div class="kpi-sub">RTX5060系列</div>
+        </div>
+        <div class="kpi-card fade-in">
+            <div class="kpi-num">¥4-5K</div>
+            <div class="kpi-label">轻薄本主流价格带</div>
+            <div class="kpi-sub">大内存+高分屏</div>
+        </div>
+    </div>
+
+    <!-- 选项卡导航 -->
+    <div class="tabs" id="mainTabs">
+        <button class="tab-btn active" onclick="switchTab('game')">
+            <span class="tab-icon">🎮</span> 游戏本
+        </button>
+        <button class="tab-btn" onclick="switchTab('slim')">
+            <span class="tab-icon">💼</span> 轻薄本
+        </button>
+        <button class="tab-btn" onclick="switchTab('brand')">
+            <span class="tab-icon">🏆</span> 品牌分析
+        </button>
+        <button class="tab-btn" onclick="switchTab('price')">
+            <span class="tab-icon">💰</span> 价格带
+        </button>
+        <button class="tab-btn" onclick="switchTab('chart')">
+            <span class="tab-icon">📊</span> 可视化
+        </button>
+        <button class="tab-btn" onclick="switchTab('rec')">
+            <span class="tab-icon">💡</span> 购买建议
+        </button>
+        <button class="tab-btn" onclick="switchTab('insight')">
+            <span class="tab-icon">📈</span> 市场洞察
+        </button>
+    </div>
+
+    <!-- ========== 游戏本 ========== -->
+    <div class="tab-content active" id="tab-game">
+        <div class="card fade-in">
+            <div class="card-title"><span class="icon">🎮</span> 游戏本销量排行榜 Top 10</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th><th>品牌</th><th>型号</th><th>CPU</th><th>显卡</th><th>内存/硬盘</th><th>价格</th><th>销量</th><th>趋势</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-preview="联想拯救者R9000P|联想|锐龙9 8945HX|RTX5070|32G/1T|¥11,186|30万+|↑涨价|游戏本销量冠军，旗舰性能，游戏本首选">
+                            <td class="rank-1">🥇 1</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td>拯救者R9000P</td>
+                            <td>锐龙9 8945HX</td>
+                            <td>RTX5070</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥11,186</td>
+                            <td class="sales">30万+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="联想拯救者Y7000|联想|Ultra7 255HX|RTX5060|16G/1T|¥8,954|20万+|↑涨价|性价比最高的Y7000系列">
+                            <td class="rank-2">🥈 2</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td>拯救者Y7000</td>
+                            <td>Ultra7 255HX</td>
+                            <td>RTX5060</td>
+                            <td>16G / 1T</td>
+                            <td class="price">¥8,954</td>
+                            <td class="sales">20万+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="联想拯救者Y9000P|联想|Ultra9 275HX|RTX5060|32G/1T|¥12,635|6万+|→稳定|高端旗舰，32G大内存">
+                            <td class="rank-3">🥉 3</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td>拯救者Y9000P</td>
+                            <td>Ultra9 275HX</td>
+                            <td>RTX5060</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥12,635</td>
+                            <td class="sales">6万+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="机械师曙光16S|机械师|R7 7745HX|RTX5060|16G/1T|¥7,262|3万+|↓降价|性价比不错的二线品牌游戏本">
+                            <td>4</td>
+                            <td><span class="brand-tag brand-mechrevo">机械师</span></td>
+                            <td>曙光16S</td>
+                            <td>R7 7745HX</td>
+                            <td>RTX5060</td>
+                            <td>16G / 1T</td>
+                            <td class="price">¥7,262</td>
+                            <td class="sales">3万+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                        <tr data-preview="惠普暗影精灵11|惠普|i7-14650HX|RTX5060|16G/1TB|¥8,499|3000+|↑涨价|惠普游戏本主力型号">
+                            <td>5</td>
+                            <td><span class="brand-tag brand-hp">惠普</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=惠普暗影精灵11" target="_blank" style="color:#60A5FA;text-decoration:none;">暗影精灵11</a></td>
+                            <td>i7-14650HX</td>
+                            <td>RTX5060</td>
+                            <td>16G / 1TB</td>
+                            <td class="price">¥8,499</td>
+                            <td class="sales">3000+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="玩家战魂AI游戏本|玩家战魂|酷睿i7|RTX3060|16G/1T|¥6,071|6000+|↓降价|RTX3060性价比极高，预算有限首选">
+                            <td>6</td>
+                            <td><span class="brand-tag brand-player">玩家战魂</span></td>
+                            <td>AI游戏本</td>
+                            <td>酷睿i7</td>
+                            <td>RTX3060</td>
+                            <td>16G / 1T</td>
+                            <td class="price">¥6,071</td>
+                            <td class="sales">6000+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                        <tr data-preview="联想拯救者Y7000P|联想|R9-8940HX|RTX5060|32G/1T|¥9,899|1万+|→稳定|Y7000P升级款，32G大内存">
+                            <td>7</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想拯救者Y7000P" target="_blank" style="color:#60A5FA;text-decoration:none;">拯救者Y7000P</a></td>
+                            <td>R9-8940HX</td>
+                            <td>RTX5060</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥9,899</td>
+                            <td class="sales">1万+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="惠普暗影精灵11|惠普|i7-14650HX|RTX5070|32G/1TB|¥8,455|500+|↑涨价|RTX5070高端游戏本">
+                            <td>8</td>
+                            <td><span class="brand-tag brand-hp">惠普</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=惠普暗影精灵11" target="_blank" style="color:#60A5FA;text-decoration:none;">暗影精灵11</a></td>
+                            <td>i7-14650HX</td>
+                            <td>RTX5070</td>
+                            <td>32G / 1TB</td>
+                            <td class="price">¥8,455</td>
+                            <td class="sales">500+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="雷神猎刃16|雷神|i9-139HX|RTX5060|16G/1T|¥8,299|400+|→稳定|高端CPU+RTX5060组合">
+                            <td>9</td>
+                            <td><span class="brand-tag brand-thunderbot">雷神</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=雷神猎刃16" target="_blank" style="color:#60A5FA;text-decoration:none;">猎刃16</a></td>
+                            <td>i9-139HX</td>
+                            <td>RTX5060</td>
+                            <td>16G / 1T</td>
+                            <td class="price">¥8,299</td>
+                            <td class="sales">400+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="联想小新Pro16|联想|酷睿13代i5|核显|32G/1TB|¥6,188|1000+|↓降价|入门游戏轻薄本，适合轻度游戏">
+                            <td>10</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新Pro16" target="_blank" style="color:#60A5FA;text-decoration:none;">小新Pro16</a></td>
+                            <td>酷睿13代i5</td>
+                            <td>核显</td>
+                            <td>32G / 1TB</td>
+                            <td class="price">¥6,188</td>
+                            <td class="sales">1000+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 轻薄本 ========== -->
+    <div class="tab-content" id="tab-slim">
+        <div class="card fade-in">
+            <div class="card-title"><span class="icon">💼</span> 轻薄本销量排行榜 Top 10</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th><th>品牌</th><th>型号</th><th>CPU</th><th>显卡</th><th>内存/硬盘</th><th>价格</th><th>销量</th><th>趋势</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-preview="联想小新Pro14GT|联想|锐龙7000系|核显|16G/512G|¥2,999|100万+|↓降价|销量破百万，¥2999神价，轻薄本首选">
+                            <td class="rank-1">🥇 1</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新Pro14GT" target="_blank" style="color:#60A5FA;text-decoration:none;">小新Pro14GT</a></td>
+                            <td>锐龙7000系</td>
+                            <td>核显</td>
+                            <td>16G / 512G</td>
+                            <td class="price">¥2,999</td>
+                            <td class="sales">100万+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                        <tr data-preview="联想小新Pro16超能本|联想|酷睿Ultra5|核显|32G/1T|¥4,819|40万+|→稳定|大屏轻薄，32G+1T存储">
+                            <td class="rank-2">🥈 2</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新Pro16超能本" target="_blank" style="color:#60A5FA;text-decoration:none;">小新Pro16超能本</a></td>
+                            <td>酷睿Ultra5</td>
+                            <td>核显</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥4,819</td>
+                            <td class="sales">40万+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="惠普战66|惠普|Ultra7 255H|核显|32G/1T|¥6,662|40万+|↑涨价|商务本标杆，稳定可靠，40万销量">
+                            <td class="rank-3">🥉 3</td>
+                            <td><span class="brand-tag brand-hp">惠普</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=惠普战66" target="_blank" style="color:#60A5FA;text-decoration:none;">战66</a></td>
+                            <td>Ultra7 255H</td>
+                            <td>核显</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥6,662</td>
+                            <td class="sales">40万+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="联想小新16/Pro16|联想|锐龙R7|核显|16G/512G|¥4,388|10万+|→稳定|联想轻薄本入门款">
+                            <td>4</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新16" target="_blank" style="color:#60A5FA;text-decoration:none;">小新16/Pro16</a></td>
+                            <td>锐龙R7</td>
+                            <td>核显</td>
+                            <td>16G / 512G</td>
+                            <td class="price">¥4,388</td>
+                            <td class="sales">10万+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="联想小新16高能本|联想|锐龙7 H255|核显|16G/512G|¥3,548|10万+|↓降价|性价比之选，R7处理器降价中">
+                            <td>5</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新16高能本" target="_blank" style="color:#60A5FA;text-decoration:none;">小新16高能本</a></td>
+                            <td>锐龙7 H255</td>
+                            <td>核显</td>
+                            <td>16G / 512G</td>
+                            <td class="price">¥3,548</td>
+                            <td class="sales">10万+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                        <tr data-preview="荣耀笔记本X16|荣耀|酷睿Ultra5|核显|24G/1T|¥3,965|9万+|→稳定|荣耀生态，24G大内存，性价比高">
+                            <td>6</td>
+                            <td><span class="brand-tag brand-honor">荣耀</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=荣耀笔记本X16" target="_blank" style="color:#60A5FA;text-decoration:none;">笔记本X16</a></td>
+                            <td>酷睿Ultra5</td>
+                            <td>核显</td>
+                            <td>24G / 1T</td>
+                            <td class="price">¥3,965</td>
+                            <td class="sales">9万+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="惠普战66+系列|惠普|Ultra5 225H|核显|32G/1T|¥6,762|1万+|↑涨价|战66升级版，价格略涨">
+                            <td>7</td>
+                            <td><span class="brand-tag brand-hp">惠普</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=惠普战66" target="_blank" style="color:#60A5FA;text-decoration:none;">战66+系列</a></td>
+                            <td>Ultra5 225H</td>
+                            <td>核显</td>
+                            <td>32G / 1T</td>
+                            <td class="price">¥6,762</td>
+                            <td class="sales">1万+</td>
+                            <td><span class="trend up">↑ 涨价</span></td>
+                        </tr>
+                        <tr data-preview="REDMI Book 14 锐龙版|小米|锐龙版2025|核显|16G/512G|¥3,480|1万+|↓降价|小米生态，价格持续走低">
+                            <td>8</td>
+                            <td><span class="brand-tag brand-xiaomi">REDMI</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=小米REDMI Book 14锐龙版" target="_blank" style="color:#60A5FA;text-decoration:none;">Book 14 锐龙版</a></td>
+                            <td>锐龙版2025</td>
+                            <td>核显</td>
+                            <td>16G / 512G</td>
+                            <td class="price">¥3,480</td>
+                            <td class="sales">1万+</td>
+                            <td><span class="trend down">↓ 降价</span></td>
+                        </tr>
+                        <tr data-preview="联想小新14/Pro14|联想|i5-13420H|核显|24G/512G|¥4,588|7000+|→稳定|i5处理器，适合办公学习">
+                            <td>9</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新14" target="_blank" style="color:#60A5FA;text-decoration:none;">小新14/Pro14</a></td>
+                            <td>i5-13420H</td>
+                            <td>核显</td>
+                            <td>24G / 512G</td>
+                            <td class="price">¥4,588</td>
+                            <td class="sales">7000+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                        <tr data-preview="联想小新Pro16|联想|酷睿Ultra5|核显|16G/1TB|¥5,188|1000+|→稳定|Pro16顶配，1TB大存储">
+                            <td>10</td>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td><a href="https://search.jd.com/Search?keyword=联想小新Pro16" target="_blank" style="color:#60A5FA;text-decoration:none;">小新Pro16</a></td>
+                            <td>酷睿Ultra5</td>
+                            <td>核显</td>
+                            <td>16G / 1TB</td>
+                            <td class="price">¥5,188</td>
+                            <td class="sales">1000+</td>
+                            <td><span class="trend stable">→ 稳定</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 品牌分析 ========== -->
+    <div class="tab-content" id="tab-brand">
+        <div class="charts-grid">
+            <div class="chart-container fade-in">
+                <div class="chart-title">🎮 游戏本品牌销量占比</div>
+                <div id="chartGamePie" class="chart"></div>
+            </div>
+            <div class="chart-container fade-in" style="animation-delay:0.1s">
+                <div class="chart-title">💼 轻薄本品牌销量占比</div>
+                <div id="chartSlimPie" class="chart"></div>
+            </div>
+            <div class="chart-container chart-full fade-in" style="animation-delay:0.2s">
+                <div class="chart-title">📊 各品牌销量对比（游戏本 vs 轻薄本）</div>
+                <div id="chartBrandBar" class="chart"></div>
+            </div>
+        </div>
+        <div class="card fade-in" style="animation-delay:0.25s">
+            <div class="card-title"><span class="icon">🏆</span> 品牌市占率详情</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>品牌</th><th>游戏本型号数</th><th>轻薄本型号数</th><th>合计</th><th>游戏本销量</th><th>轻薄本销量</th><th>市场地位</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="brand-tag brand-lenovo">联想</span></td>
+                            <td>6款</td><td>6款</td><td>12款</td>
+                            <td class="sales">58万+</td><td class="sales">162万+</td>
+                            <td><span class="trend up">🏆 绝对统治者</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="brand-tag brand-hp">惠普</span></td>
+                            <td>2款</td><td>2款</td><td>4款</td>
+                            <td class="sales">3500+</td><td class="sales">41万+</td>
+                            <td><span class="trend stable">第二品牌</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="brand-tag brand-mechrevo">机械师</span></td>
+                            <td>1款</td><td>0款</td><td>1款</td>
+                            <td class="sales">3万+</td><td>—</td>
+                            <td><span class="trend stable">游戏本专业户</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="brand-tag brand-player">玩家战魂</span></td>
+                            <td>1款</td><td>0款</td><td>1款</td>
+                            <td class="sales">6000+</td><td>—</td>
+                            <td><span class="trend down">性价比搅局者</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="brand-tag brand-honor">荣耀</span></td>
+                            <td>0款</td><td>1款</td><td>1款</td>
+                            <td>—</td><td class="sales">9万+</td>
+                            <td><span class="trend stable">轻薄本新锐</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="brand-tag brand-xiaomi">REDMI</span></td>
+                            <td>0款</td><td>1款</td><td>1款</td>
+                            <td>—</td><td class="sales">1万+</td>
+                            <td><span class="trend down">入门市场</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 价格带 ========== -->
+    <div class="tab-content" id="tab-price">
+        <div class="card fade-in">
+            <div class="card-title"><span class="icon">💰</span> 游戏本价格带分布</div>
+            <div class="price-zone">
+                <div class="zone-card game">
+                    <div class="zone-range">¥6,000-8,000</div>
+                    <div class="zone-desc">🎮 入门级游戏本<br>RTX3060/4060 | 主流配置</div>
+                </div>
+                <div class="zone-card game">
+                    <div class="zone-range">¥8,000-10,000</div>
+                    <div class="zone-desc">🎮 主流游戏本<br>RTX5060 | RTX5070入门</div>
+                </div>
+                <div class="zone-card game">
+                    <div class="zone-range">¥10,000-13,000</div>
+                    <div class="zone-desc">🎮 高端游戏本<br>RTX5070/5080 | 旗舰性能</div>
+                </div>
+            </div>
+        </div>
+        <div class="card fade-in" style="animation-delay:0.1s">
+            <div class="card-title"><span class="icon">💼</span> 轻薄本价格带分布</div>
+            <div class="price-zone">
+                <div class="zone-card slim">
+                    <div class="zone-range">¥3,000-4,000</div>
+                    <div class="zone-desc">💼 入门轻薄本<br>基础配置 | 办公学习</div>
+                </div>
+                <div class="zone-card slim">
+                    <div class="zone-range">¥4,000-6,000</div>
+                    <div class="zone-desc">💼 主流轻薄本<br>大内存+高分屏 | 性价比最高</div>
+                </div>
+                <div class="zone-card slim">
+                    <div class="zone-range">¥6,000-7,000</div>
+                    <div class="zone-desc">💼 高端商务本<br>Ultra处理器 | 商务旗舰</div>
+                </div>
+            </div>
+        </div>
+        <div class="card fade-in" style="animation-delay:0.2s">
+            <div class="card-title"><span class="icon">📊</span> 价格分布可视化</div>
+            <div id="chartPrice" style="width:100%;height:280px;"></div>
+        </div>
+    </div>
+
+    <!-- ========== 可视化图表 ========== -->
+    <div class="tab-content" id="tab-chart">
+        <div class="charts-grid">
+            <div class="chart-container fade-in">
+                <div class="chart-title">📊 游戏本价格分布</div>
+                <div id="chartGamePrice" class="chart"></div>
+            </div>
+            <div class="chart-container fade-in" style="animation-delay:0.1s">
+                <div class="chart-title">📊 轻薄本价格分布</div>
+                <div id="chartSlimPrice" class="chart"></div>
+            </div>
+            <div class="chart-container chart-full fade-in" style="animation-delay:0.2s">
+                <div class="chart-title">📈 品牌综合竞争力雷达图</div>
+                <div id="chartRadar" class="chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 购买建议 ========== -->
+    <div class="tab-content" id="tab-rec">
+        <div class="rec-grid">
+            <div class="rec-card fade-in">
+                <span class="rec-badge top">🔥 销量冠军</span>
+                <h4>联想拯救者R9000P</h4>
+                <div class="rec-model">锐龙9 + RTX5070 + 32G + 1T</div>
+                <div class="rec-price">¥11,186</div>
+                <div class="rec-reason">30万+销量，旗舰性能，游戏本首选</div>
+            </div>
+            <div class="rec-card fade-in" style="animation-delay:0.1s">
+                <span class="rec-badge value">💰 性价比之王</span>
+                <h4>联想小新Pro14GT</h4>
+                <div class="rec-model">锐龙7000系 + 16G + 512G</div>
+                <div class="rec-price">¥2,999</div>
+                <div class="rec-reason">100万+销量，¥2999神价，轻薄本首选</div>
+            </div>
+            <div class="rec-card fade-in" style="animation-delay:0.15s">
+                <span class="rec-badge game">🎮 性价比游戏</span>
+                <h4>玩家战魂AI游戏本</h4>
+                <div class="rec-model">酷睿i7 + RTX3060 + 16G + 1T</div>
+                <div class="rec-price">¥6,071</div>
+                <div class="rec-reason">RTX3060性价比极高，预算有限首选</div>
+            </div>
+            <div class="rec-card fade-in" style="animation-delay:0.2s">
+                <span class="rec-badge business">💼 商务办公</span>
+                <h4>惠普战66</h4>
+                <div class="rec-model">Ultra7 255H + 32G + 1T</div>
+                <div class="rec-price">¥6,662</div>
+                <div class="rec-reason">40万+销量，商务本标杆，稳定可靠</div>
+            </div>
+        </div>
+        <div class="card fade-in" style="animation-delay:0.25s">
+            <div class="card-title"><span class="icon">⚠️</span> 戴尔 & 华硕说明</div>
+            <ul class="insight-list">
+                <li><span class="bullet"></span><span><strong>戴尔(Dell)：</strong>2026年Q1未能进入京东销量Top10。主因：①价格偏高（灵越系列¥6000+起步）②性价比不及联想③国内渠道布局较弱。建议关注戴尔灵越Pro系列促销。</span></li>
+                <li><span class="bullet"></span><span><strong>华硕(ASUS)：</strong>天选/ROG系列在京东仍有销售，但同价位配置不及联想拯救者，ROG系列¥12000+定位高端，2026年受联想涨价影响，高端市场份额有所下滑。</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========== 市场洞察 ========== -->
+    <div class="tab-content" id="tab-insight">
+        <div class="card fade-in">
+            <div class="card-title"><span class="icon">📈</span> 市场核心洞察</div>
+            <ul class="insight-list">
+                <li><span class="bullet" style="background:#e60012"></span><span><strong>联想绝对统治：</strong>游戏本+轻薄本双料冠军，Top10中各占6席，市场份额达60%，产品线完整覆盖各价位段。</span></li>
+                <li><span class="bullet" style="background:#60A5FA"></span><span><strong>RTX5060/5070成主流：</strong>2026年游戏本全面进入RTX50系列时代，RTX30系列开始降价清仓。</span></li>
+                <li><span class="bullet" style="background:#10B981"></span><span><strong>2.5K高刷屏成标配：</strong>游戏本(240Hz/300Hz)与轻薄本(120Hz)，2.5K+高刷已是消费者选购标配。</span></li>
+                <li><span class="bullet" style="background:#8B5CF6"></span><span><strong>AI笔记本兴起：</strong>Intel Ultra处理器和AMD AI处理器成新趋势，AI PC概念加速渗透。</span></li>
+                <li><span class="bullet" style="background:#F59E0B"></span><span><strong>游戏本涨价趋势：</strong>RTX50系列新品普遍涨价10-15%，旧款RTX40系列开始降价。</span></li>
+                <li><span class="bullet" style="background:#EF4444"></span><span><strong>轻薄本竞争激烈：</strong>联想小新系列凭借性价比统治市场，惠普战66商务本紧随其后。</span></li>
+                <li><span class="bullet" style="background:#00a4de"></span><span><strong>机械革命/雷神崛起：</strong>二线品牌在游戏本领域发力，高配置+低价格策略分流传统大牌。</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 预览弹出框 -->
+<div class="preview-popup" id="previewPopup">
+    <div class="pp-title" id="ppTitle">型号名称</div>
+    <div class="pp-row"><span>品牌</span><span id="ppBrand">—</span></div>
+    <div class="pp-row"><span>CPU</span><span id="ppCpu">—</span></div>
+    <div class="pp-row"><span>显卡</span><span id="ppGpu">—</span></div>
+    <div class="pp-row"><span>存储</span><span id="ppStorage">—</span></div>
+    <div class="pp-row"><span>价格</span><span id="ppPrice">—</span></div>
+    <div class="pp-row"><span>销量</span><span id="ppSales">—</span></div>
+    <div id="ppTag" class="pp-tag"></div>
+</div>
+
+<script>
+// ========== 选项卡切换 ==========
+function switchTab(tabId) {
+    const tabs = ['game','slim','brand','price','chart','rec','insight'];
+    const idx = tabs.indexOf(tabId);
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    btns[idx].classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    setTimeout(() => { initCharts(); }, 80);
+}
+
+// ========== 预览框 ==========
+const popup = document.getElementById('previewPopup');
+document.querySelectorAll('tr[data-preview]').forEach(row => {
+    row.addEventListener('mouseenter', function() {
+        const d = this.dataset.preview.split('|');
+        document.getElementById('ppTitle').textContent = d[0];
+        document.getElementById('ppBrand').textContent = d[1];
+        document.getElementById('ppCpu').textContent = d[2];
+        document.getElementById('ppGpu').textContent = d[3];
+        document.getElementById('ppStorage').textContent = d[4];
+        document.getElementById('ppPrice').textContent = d[5];
+        document.getElementById('ppSales').textContent = d[6];
+        document.getElementById('ppTag').textContent = d[7] || '';
+        popup.classList.add('show');
+    });
+    row.addEventListener('mousemove', function(e) {
+        const x = e.clientX + 15, y = e.clientY + 15;
+        const pw = popup.offsetWidth, ph = popup.offsetHeight;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        popup.style.left = (x + pw > vw ? vw - pw - 10 : x) + 'px';
+        popup.style.top = (y + ph > vh ? vh - ph - 10 : y) + 'px';
+    });
+    row.addEventListener('mouseleave', function() {
+        popup.classList.remove('show');
+    });
+});
+
+// ========== 图表 ==========
+let charts = {};
+function initCharts() {
+    const opts = {
+        backgroundColor: 'transparent',
+        textStyle: { color: '#94A3B8', fontFamily: 'Noto Sans SC' },
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(15,23,42,0.95)', borderColor: 'rgba(79,143,239,0.3)', textStyle: { color: '#F1F5F9' } },
+        legend: { textStyle: { color: '#94A3B8' } }
+    };
+
+    // 游戏本饼图
+    if (!charts.gamePie) {
+        const c = echarts.init(document.getElementById('chartGamePie'));
+        c.setOption({
+            ...opts, tooltip: { ...opts.tooltip, trigger: 'item' },
+            series: [{
+                type: 'pie', radius: ['40%','70%'], center: ['50%','50%'],
+                data: [
+                    { value: 58, name: '联想', itemStyle: { color: '#e60012' } },
+                    { value: 3.5, name: '惠普', itemStyle: { color: '#0096d6' } },
+                    { value: 3, name: '机械师', itemStyle: { color: '#00a4de' } },
+                    { value: 0.6, name: '玩家战魂', itemStyle: { color: '#7c3aed' } },
+                    { value: 0.4, name: '雷神', itemStyle: { color: '#ff4500' } }
+                ],
+                label: { color: '#94A3B8', formatter: '{b}: {d}%' },
+                emphasis: { itemStyle: { shadowBlur: 20, shadowColor: 'rgba(0,0,0,0.5)' } }
+            }]
+        });
+        charts.gamePie = c;
+    }
+
+    // 轻薄本饼图
+    if (!charts.slimPie) {
+        const c = echarts.init(document.getElementById('chartSlimPie'));
+        c.setOption({
+            ...opts, tooltip: { ...opts.tooltip, trigger: 'item' },
+            series: [{
+                type: 'pie', radius: ['40%','70%'], center: ['50%','50%'],
+                data: [
+                    { value: 162, name: '联想', itemStyle: { color: '#e60012' } },
+                    { value: 41, name: '惠普', itemStyle: { color: '#0096d6' } },
+                    { value: 9, name: '荣耀', itemStyle: { color: '#00b4d8' } },
+                    { value: 1, name: 'REDMI', itemStyle: { color: '#ff6700' } }
+                ],
+                label: { color: '#94A3B8', formatter: '{b}: {d}%' },
+                emphasis: { itemStyle: { shadowBlur: 20, shadowColor: 'rgba(0,0,0,0.5)' } }
+            }]
+        });
+        charts.slimPie = c;
+    }
+
+    // 品牌对比柱状图
+    if (!charts.brandBar) {
+        const c = echarts.init(document.getElementById('chartBrandBar'));
+        c.setOption({
+            ...opts,
+            grid: { top: 10, right: 10, bottom: 30, left: 50 },
+            legend: { data: ['游戏本销量(万)', '轻薄本销量(万)'], textStyle: { color: '#94A3B8' }, top: 0 },
+            xAxis: { type: 'category', data: ['联想', '惠普', '机械师', '玩家战魂', '雷神', '荣耀', 'REDMI'],
+                axisLine: { lineStyle: { color: '#334155' } }, axisLabel: { color: '#94A3B8' } },
+            yAxis: { type: 'value', axisLine: { lineStyle: { color: '#334155' } },
+                splitLine: { lineStyle: { color: '#334155', type: 'dashed' } }, axisLabel: { color: '#94A3B8' } },
+            series: [
+                { name: '游戏本销量(万)', type: 'bar', data: [58, 0.35, 3, 0.6, 0.4, 0, 0],
+                  itemStyle: { color: '#ef4444', borderRadius: [4,4,0,0] } },
+                { name: '轻薄本销量(万)', type: 'bar', data: [162, 41, 0, 0, 0, 9, 1],
+                  itemStyle: { color: '#10b981', borderRadius: [4,4,0,0] } }
+            ]
+        });
+        charts.brandBar = c;
+    }
+
+    // 游戏本价格分布
+    if (!charts.gamePrice && document.getElementById('chartGamePrice')) {
+        const c = echarts.init(document.getElementById('chartGamePrice'));
+        c.setOption({
+            ...opts,
+            grid: { top: 10, right: 10, bottom: 30, left: 50 },
+            xAxis: { type: 'category', data: ['R9000P', 'Y7000', 'Y9000P', '曙光16S', '暗影11(5060)', '战魂AI', 'Y7000P', '暗影11(5070)', '猎刃16', '小新Pro16'],
+                axisLine: { lineStyle: { color: '#334155' } }, axisLabel: { color: '#94A3B8', rotate: 20, fontSize: 10 } },
+            yAxis: { type: 'value', axisLine: { lineStyle: { color: '#334155' } },
+                splitLine: { lineStyle: { color: '#334155', type: 'dashed' } }, axisLabel: { color: '#94A3B8', formatter: '{value}元' } },
+            series: [{
+                type: 'bar', data: [11186, 8954, 12635, 7262, 8499, 6071, 9899, 8455, 8299, 6188],
+                itemStyle: {
+                    color: function(p) {
+                        const c = ['#e60012','#e60012','#e60012','#00a4de','#0096d6','#7c3aed','#e60012','#0096d6','#ff4500','#e60012'];
+                        return c[p.dataIndex];
+                    }, borderRadius: [4,4,0,0]
+                }
+            }]
+        });
+        charts.gamePrice = c;
+    }
+
+    // 轻薄本价格分布
+    if (!charts.slimPrice && document.getElementById('chartSlimPrice')) {
+        const c = echarts.init(document.getElementById('chartSlimPrice'));
+        c.setOption({
+            ...opts,
+            grid: { top: 10, right: 10, bottom: 30, left: 50 },
+            xAxis: { type: 'category', data: ['小新Pro14GT', '小新Pro16超', '战66', '小新16/Pro', '小新16高', '荣耀X16', '战66+', 'REDMI14', '小新14/Pro', '小新Pro16'],
+                axisLine: { lineStyle: { color: '#334155' } }, axisLabel: { color: '#94A3B8', rotate: 20, fontSize: 10 } },
+            yAxis: { type: 'value', axisLine: { lineStyle: { color: '#334155' } },
+                splitLine: { lineStyle: { color: '#334155', type: 'dashed' } }, axisLabel: { color: '#94A3B8', formatter: '{value}元' } },
+            series: [{
+                type: 'bar', data: [2999, 4819, 6662, 4388, 3548, 3965, 6762, 3480, 4588, 5188],
+                itemStyle: {
+                    color: function(p) {
+                        const c = ['#e60012','#e60012','#0096d6','#e60012','#e60012','#00b4d8','#0096d6','#ff6700','#e60012','#e60012'];
+                        return c[p.dataIndex];
+                    }, borderRadius: [4,4,0,0]
+                }
+            }]
+        });
+        charts.slimPrice = c;
+    }
+
+    // 雷达图
+    if (!charts.radar && document.getElementById('chartRadar')) {
+        const c = echarts.init(document.getElementById('chartRadar'));
+        c.setOption({
+            ...opts,
+            legend: { data: ['联想', '惠普', '荣耀'], textStyle: { color: '#94A3B8' }, top: 0 },
+            radar: {
+                indicator: [
+                    { name: '性价比', max: 100 }, { name: '品牌力', max: 100 },
+                    { name: '销量', max: 100 }, { name: '游戏本', max: 100 }, { name: '轻薄本', max: 100 }, { name: '服务', max: 100 }
+                ],
+                axisName: { color: '#94A3B8' },
+                splitLine: { lineStyle: { color: '#334155' } },
+                splitArea: { areaStyle: { color: ['rgba(79,143,239,0.02)', 'transparent'] } }
+            },
+            series: [{
+                type: 'radar', data: [
+                    { value: [95, 90, 98, 95, 95, 88], name: '联想', itemStyle: { color: '#e60012' }, areaStyle: { color: 'rgba(230,0,18,0.2)' } },
+                    { value: [70, 85, 50, 60, 80, 85], name: '惠普', itemStyle: { color: '#0096d6' }, areaStyle: { color: 'rgba(0,150,214,0.2)' } },
+                    { value: [80, 60, 30, 10, 60, 70], name: '荣耀', itemStyle: { color: '#00b4d8' }, areaStyle: { color: 'rgba(0,180,216,0.2)' } }
+                ]
+            }]
+        });
+        charts.radar = c;
+    }
+
+    // 价格带分布
+    if (!charts.price && document.getElementById('chartPrice')) {
+        const c = echarts.init(document.getElementById('chartPrice'));
+        c.setOption({
+            ...opts,
+            grid: { top: 10, right: 10, bottom: 30, left: 50 },
+            legend: { data: ['游戏本', '轻薄本'], textStyle: { color: '#94A3B8' }, top: 0 },
+            xAxis: { type: 'category', data: ['¥3K-4K', '¥4K-5K', '¥5K-6K', '¥6K-7K', '¥7K-8K', '¥8K-10K', '¥10K-13K'],
+                axisLine: { lineStyle: { color: '#334155' } }, axisLabel: { color: '#94A3B8' } },
+            yAxis: { type: 'value', axisLine: { lineStyle: { color: '#334155' } },
+                splitLine: { lineStyle: { color: '#334155', type: 'dashed' } }, axisLabel: { color: '#94A3B8' } },
+            series: [
+                { name: '游戏本', type: 'bar', data: [0, 0, 0, 1, 1, 4, 4], itemStyle: { color: '#ef4444', borderRadius: [4,4,0,0] } },
+                { name: '轻薄本', type: 'bar', data: [3, 4, 2, 1, 0, 0, 0], itemStyle: { color: '#10b981', borderRadius: [4,4,0,0] } }
+            ]
+        });
+        charts.price = c;
+    }
+}
+
+window.addEventListener('load', () => { initCharts(); });
+window.addEventListener('resize', () => { Object.values(charts).forEach(c => c && c.resize()); });
+</script>
+</body>
+</html>
